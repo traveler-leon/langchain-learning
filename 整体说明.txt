@@ -1,0 +1,9 @@
+langchain架构的核心组成
+1. langchain-core
+    基本的抽象类支持和LCEL范式支持
+2. langchain-community
+    第三方实现支持
+3. langchain
+    chain、agent、retrieval
+
+
