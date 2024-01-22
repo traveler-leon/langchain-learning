@@ -5,3 +5,5 @@ prompt_template = PromptTemplate.from_template(
 )
 res = prompt_template.format(adjective="funny",content="chickens")
 print(res)
+
+print("test")
