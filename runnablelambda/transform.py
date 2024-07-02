@@ -5,8 +5,8 @@
 """
 from langchain_core.runnables import RunnableLambda
 
-def add_one(x:int)->int:
-    return x+1
+def add_one(x:int)->str:
+    return str(x)+'leon'
 """
 1. 校验配置文件，如果没有传入配置文件，则初始化最小4个参数，
         empty = RunnableConfig(
@@ -22,4 +22,5 @@ def add_one(x:int)->int:
 6. 如果fun返回的结果是一个runnable，则继续调用runnable的invoke，最大可递归深度为25
 """
 runnable = RunnableLambda(add_one)
-print(runnable.invoke(10))
+for i in runnable.transform([10,20]):
+    print(i)
