@@ -38,8 +38,125 @@ astream：stream的异步
 
 ### runnable基础能力介绍
 #### invoke
+作用： 传递单个输入得到单个输出
+
+步骤：
+1. 子类去实现
 #### batch
+作用： 传递多个输入得到多个输出
+
+步骤：
+ 1. 校验配置文件
+    2. 如果没有传入配置文件，则初始化最小4个参数，
+    ```python
+            empty = RunnableConfig(
+            tags=[],
+            metadata={},
+            callbacks=None,
+            recursion_limit=25,)
+    ```
+
+    3. 如果输入是多个，则配置文件要copy到同样长度，得到一个配置文件列表
+    4. 配置文集列表中只有第一个要设置run_id,其他的需要删除，便于trace追踪
+    
+2. 创建一个线程池，并行调用invoke
 #### stream
+作用：
+1. 流式输出
+
+步骤：
+1. yield输出invoke结果
 #### ainvoke
+作用： 传递单个单个输入，异步的得到单个输出
+
+步骤：   
+1. 创建一个事件循环；
+2. 使用一个默认的执行器，通常就是一个线程池，来执行同步的invoke方法
+3. 将执行器交给事件循环，实现异步功能
+注意：如果子类不重写，其实本质只要你的runnable支持invoke，就会支持ainvoke
 #### abatch
+作用： 传递多个输入,异步的得到多个输出
+
+步骤：
+ 1. 校验配置文件
+    2. 如果没有传入配置文件，则初始化最小4个参数，
+            empty = RunnableConfig(
+            tags=[],
+            metadata={},
+            callbacks=None,
+            recursion_limit=25,)
+    3. 如果输入是多个，则配置文件要copy到同样长度，得到一个配置文件列表
+    4. 配置文集列表中只有第一个要设置run_id,其他的需要删除，便于trace追踪
+    
+2. 创建一个事件循环，并行根据每一个输入调用ainvoke,(有最大输入调用次数限制：max_concurrency)
 #### astream
+作用：
+1. 异步流式输出
+
+步骤：
+1. yield输出ainvoke结果
+
+#### __or__、__ror__
+作用： 重写|符号，将两个runnablelike拼接成runablesequence
+
+步骤：
+1. 检查输入的对象other是否是runnablelike
+   2. runnablelike包括 
+   ```python
+   RunnableLike = Union[
+                         Runnable[Input, Output],
+                         Callable[[Input], Output],
+                         Callable[[Input], Awaitable[Output]],
+                         Callable[[Iterator[Input]], Iterator[Output]],
+                         Callable[[AsyncIterator[Input]], AsyncIterator[Output]],
+                         Mapping[str, Any],
+                     ]
+   ``` 
+   3.  如果输入对象是一个runnable，则直接返回
+   4.  如果输入对象是一个异步生成器或者是一个生成器，则将输入转为RunnableGenerator返回
+   5. 如果输入对象是一个可调用对象，则将输入转为一个RunnableLamabda
+   6. 如果输入是一个字典，则将输入转为一个RunnableParallel
+2. 将原始的runnable和转化后的输入拼接成一个新的runnableSequence
+
+#### pipe
+作用：和__or__完全相同
+
+#### get_name
+作用：获取runnable的名字
+
+步骤：
+1. name获取：
+    1. 如果传入了name，则就用传入的；
+    2. 如果没有传入，就用runnable初始化时复制的name
+    3. 如果都没有，就用runnable的类名作为name
+2. name相关属性返回：
+    1. 如果传入suffix：则返回结果为suffix_name
+    2. 如果没有传入name，则返回name
+#### InputType  (属性)
+作用：返回Runnable的input类型
+
+步骤：
+1. 直接获取此类的参数，第一个参数为输入参数，返回出入参数的类型
+#### OutputType  (属性)
+作用：返回Runnable的output类型
+
+步骤：
+1. 直接获取此类的返回参数
+#### input_schema  (属性)
+作用：获取输入的schema
+
+步骤：
+1. 获取输入schema：
+    1. 如果输入类型是一个类，且是继承了BaseModel，则直接返回输入类型
+    2. 否则，根据输入类型创建一个pydantic的数据模型
+#### output_schema  (属性)
+作用：获取输出schema
+
+步骤：
+1. 获取输出schema：
+    1. 如果输出类型是一个类，且是继承了BaseModel，则直接返回输入数据类型
+    2. 否则，根据输入类型创建一个pydantic的数据模型
+
+
+
+**注意：原则上说，子类只要重写了invoke，其他的诸如ainvoke，batch，abatch等都可以使用，这是子类的最小化实现方式**
