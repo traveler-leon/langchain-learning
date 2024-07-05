@@ -39,7 +39,7 @@ question：{user_input_chinese}
 用户没输入时，我们定义好的这个模板，就叫做prompt模板（prompt template）,当用户输入内容后这个内容会替换掉模板中的user_input_chinese，替换后的完整内容就是一个
 prompt。
 
-**总结**：prompt template就是具有一定变量的字符串，这些变量是运行时用户输入的。用户输入后构成的完整字符串才被叫做prompt
+**总结：prompt template就是具有一定变量的字符串，这些变量是运行时用户输入的。用户输入后构成的完整字符串才被叫做prompt**
 
 ## BasePromptTemplate
 而在langchain中，提供了定义prompt template的能力，而prompt template接受用户内容后生产出来的内容叫做prompt value，这里的prompt value和llm需要的prompt还有点
@@ -52,29 +52,81 @@ prompt。
 
 下面就讲讲langchain对于prompt  template的底层支持，底层是由BasePromptTemplate
 ###  BasePromptTemplate能力
-BasePromptTemplate提供了一些基础能力的支持
-	1. 变量保存
-	2. 变量类型
-	3. 输出解析
-	4. 局部变量
+BasePromptTemplate提供了一些最基础能力的支持
+#### 变量支持
+	1. 变量保存：input_variables
+	2. 变量类型：input_types
+	3. 输出解析：output_parser
+	4. 局部变量：partial_variables
 	5. metadata
 	6. tags
-	
-1. 校验输入变量
+#### 方法支持
+0. 自动输入校验：validate_variable_names        
+	0.1. 创建的prompt template中，不能有stop的key，如果有会报错，因为stop通常是会被用作截断标识，所有langchain限制了不能用     
+1. 校验输入变量：_validate_input   
 	1.1.输入变量不是一个字典，且只有一个的话，就会将input_variables中保存的变量名拿出来，组成一个字典   
 	1.2 如果传入的是一个字典，如果字典和保存在input_variables中有差异，则报错。   
 	1.3 返回校验后的输入字典   
 	
-2. 模板实例化
+2. 模板实例化：invoke   
     2.1 校验config   
 	2.2 校验输入变量    
-	2.3 格式化模板（交给子类）   
+	2.3 格式化模板（交给子类），生成prompt value 
 	
-3. 局部变量化
+3. 局部变量化：partial   
 	2.1 将局部变量从input_variables提出，更新input_variables    
 	
-4. 转为dict
-5. 保存到本地（只支持json 和yaml ）    
-
+4. 转为dict：dict
+5. 保存到本地（只支持json 和yaml ）：save
+6. prompt字符串生产（子类实现）：format   
+   6.1 这里是直接生产出一个格式化后的字符串
+7. prompt value生产（子类实现）：format_prompt   
+   7.1 这里其实就是将format格式化后得到的prompt字符串包装一下，包装成prompt value，这样便于在prompt字符串和message之间转换
 ## 思考
-在这个底层类中
+在这个底层类中，可以看出，全部都是对于prompt template底层字符串的支持。
+
+## llm prompt支持
+### StringPromptTemplate
+#### 方法支持
+StringPromptTemplate只提供一个能力，就是构建出prompt value，在langchain中对于llm来说它的prompt是一个StringPromptValue类
+
+1. StringPromptValue的生成：format_prompt   
+	1.1. 将子类实现的format生成的prompt字符串进一步包装成StringPromptValue类
+
+### PromptTemplate
+#### 变量支持
+1. prompt template支持：template
+2. prompt pemplate渲染格式支持：template_format          
+   2.1 支持三种渲染格式："f-string", "mustache", "jinja2"   
+   2.2 生成最终的prompt value
+#### 方法支持
+1. prompt template定义（从传入字符串定义）：from_template             
+	1.1. 根据渲染格式，从输入的模板字符串中抠出变量input_variables   
+	1.2. 在input_variables中剔除传入的partial_variables部分   
+    1.3. 初始化出一个PromptTemplate类
+2. prompt template定义（从本地文件定义）：from_file        
+	1.1. 打开本地prompt template文件    
+	1.2. 调用from_template初始化一个PromptTemplate类
+
+3. prompt template定义（从案例中定义）：from_examples    
+
+4. prompt 字符串格式化：format：    
+   4.1. 将传入的变量替换掉template中的对应位置，完成一个完整的prompt 字符串的产出。
+5. __add__(只支持格式f-strings)   
+   5.1. 如果输入的相加的对象是PromptTemplate类，则对template相加，input_variables合并，partial_variables合并，特殊点在于partial_variables不能有重复内容，    
+   5.2. 如果输入的相加对象是str，则先调用template_format转为PromptTemplate类，然后相加
+
+## chat model prompt支持
+### BaseChatPromptTemplate
+#### 方法支持
+1. prompt pemplate渲染格式支持：template_format        
+   1.1. 调用format_messages生产message         
+   1.2. 将message包装成ChatPromptValue
+2. prompt 字符串生成：format    
+   2.1 调用template_format生成的prompt value的string方法，直接生成字符串
+3. message生成（子类实现）：format_messages
+
+### ChatPromptTemplate
+#### 变量支持
+1. message支持：messages
+#### 方法支持
