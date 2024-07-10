@@ -1,20 +1,21 @@
 _type: prompt
 input_types: {}
 input_variables:
-- user_input_chinese
+- user_input_words
 metadata: null
 name: null
 output_parser: null
 partial_variables: {}
 tags: null
-template: "\n\u4F60\u662F\u4E00\u4E2A\u4E2D\u82F1\u6587\u7FFB\u8BD1\u52A9\u624B\uFF0C\
-  \u4F60\u9700\u8981\u628A\u6211\u53D1\u7ED9\u4F60\u7684question\u7FFB\u8BD1\u4E3A\
-  \u82F1\u6587\uFF0C\u4E0B\u9762\u7684examples\u662F\u4E00\u4E9B\u5177\u4F53\u7FFB\
-  \u8BD1\u7684\u6848\u4F8B\uFF0C\u7FFB\u8BD1\u7684\u65F6\u5019\u8BF7\u53C2\u8003\u6848\
-  \u4F8B\u6765\u7FFB\u8BD1\uFF0C\u6CE8\u610F\u53EA\u8F93\u51FA\u6700\u7EC8\u7FFB\u8BD1\
-  \u7684\u7ED3\u679C,\uFF1A\nexamples\uFF1A\nquestion\uFF1A\u7F8E\u4E3D->beautiful;\n\
-  question\uFF1A\u7537\u5B69->boy;\nquestion\uFF1A\u7537\u4EBA->man\uFF1B\nquestion\uFF1A\
-  456->four hundred and fifty-six;\nquestion\uFF1A1->one;\nquestion\uFF1A34->thirty-four\n\
-  question\uFF1A{user_input_chinese}\n"
+template: "\n\u4F60\u662F\u4E00\u4E2A\u7FFB\u8BD1\u52A9\u624B\uFF0C\u4F60\u64C5\u957F\
+  \u5C06\u4E2D\u6587\u7FFB\u8BD1\u4E3A\u82F1\u6587\uFF0C\u8BF7\u5C06\u6211\u53D1\u9001\
+  \u7ED9\u4F60\u7684question\u7684\u5185\u5BB9\u7FFB\u8BD1\u4E3A\u82F1\u6587\uFF0C\
+  \u4E0D\u8981\u8FD4\u56DE\u65E0\u5173\u7684\u5185\u5BB9\uFF0C\u53EA\u9700\u8FD4\u56DE\
+  \u6700\u7EC8\u7FFB\u8BD1\u7ED3\u679C\uFF0C\u4E0B\u9762\u7684history examples\u4E2D\
+  \u63D0\u4F9B\u4E86\u4E00\u4E9B\u5177\u4F53\u7684\u6848\u4F8B\uFF0C\u4E3A\u4F60\u63D0\
+  \u4F9B\u4E00\u4E9B\u53C2\u8003\uFF1A\n\n## history examples:\nquestion:\u7F8E\u4E3D\
+  ->answer:beautiful;\nquestion:\u7537\u5B69->answer:boy;\nquestion:\u7537\u4EBA->answer:man;\n\
+  question:456->answer:four hundred and fifty-six;\nquestion:1->answer:one;\nquestion:34->answer:thirty-four;\n\
+  \n## user true task:\nquestion\uFF1A{user_input_words}->answer\uFF1A\n"
 template_format: f-string
 validate_template: false
