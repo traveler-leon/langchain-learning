@@ -103,5 +103,5 @@ from langchain_core.prompts import PromptTemplate
 # prompt_template.save("./data/chinese2english.yml")
 
 # 6. 从保存的文件中加载
-prompt_template = PromptTemplate.from_file("./data/chinese2english.yml")
+prompt_template = PromptTemplate.from_file("data/chinese2english.yml")
 print(prompt_template)

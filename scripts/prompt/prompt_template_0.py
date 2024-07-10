@@ -31,7 +31,7 @@ from pydantic_settings import BaseSettings,SettingsConfigDict
 qwen_key="sk-cc2209cec48c4bc966fb4acda169e",这样省事。
 """
 class ModelConfig(BaseSettings):
-    model_config = SettingsConfigDict(env_file="../../.env",env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file="../../../.env", env_file_encoding="utf-8")
     qwen_key:str
     deepseek_key:str
     deepseek_base_url:str

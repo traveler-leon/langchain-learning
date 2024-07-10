@@ -376,6 +376,6 @@ prompt_template.save("./data/chinese2english.yml")
 ```python
 from langchain_core.prompts import PromptTemplate
 
-prompt_template = PromptTemplate.from_file("../prompt/data/chinese2english.yml")
+prompt_template = PromptTemplate.from_file("../scripts/prompt/data/chinese2english.yml")
 print(prompt_template)
 ```

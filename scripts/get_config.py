@@ -6,7 +6,7 @@
 from pydantic_settings import BaseSettings,SettingsConfigDict
 # 1. 读取配置信息,获取模型key
 class ModelConfig(BaseSettings):
-    model_config = SettingsConfigDict(env_file="../.env",env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file="../../.env", env_file_encoding="utf-8")
     qwen_key:str
     deepseek_key:str
     deepseek_base_url:str
