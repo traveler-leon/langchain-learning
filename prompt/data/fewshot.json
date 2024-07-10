@@ -1,0 +1,57 @@
+{
+    "name": null,
+    "input_variables": [
+        "input",
+        "lag2lag"
+    ],
+    "input_types": {},
+    "output_parser": null,
+    "partial_variables": {},
+    "metadata": null,
+    "tags": null,
+    "examples": [
+        {
+            "question": "\u7f8e\u4e3d->beautiful"
+        },
+        {
+            "question": "\u7537\u5b69->boy"
+        },
+        {
+            "question": "\u7537\u4eba->man"
+        },
+        {
+            "question": "456->four"
+        },
+        {
+            "question": "456->four hundred and fifty-six"
+        },
+        {
+            "question": "1->one"
+        },
+        {
+            "question": "34->thirty - four"
+        }
+    ],
+    "example_selector": null,
+    "validate_template": false,
+    "example_prompt": {
+        "name": null,
+        "input_variables": [
+            "question"
+        ],
+        "input_types": {},
+        "output_parser": null,
+        "partial_variables": {},
+        "metadata": null,
+        "tags": null,
+        "template": "question: {question}",
+        "template_format": "f-string",
+        "validate_template": false,
+        "_type": "prompt"
+    },
+    "suffix": "true question:{input}",
+    "example_separator": "\n\n",
+    "prefix": "\u4f60\u662f\u4e00\u4e2a{lag2lag}\u6587\u7ffb\u8bd1\u52a9\u624b\uff0c\u4e0b\u9762\u7684examples\u662f\u4e00\u4e9b\u5177\u4f53\u7ffb\u8bd1\u7684\u6848\u4f8b\uff0c\u7ffb\u8bd1\u7684\u65f6\u5019\u8bf7\u53c2\u8003\u6848\u4f8b\u6765\u7ffb\u8bd1\uff0c\u6ce8\u610f\u53ea\u8f93\u51fa\u6700\u7ec8\u7ffb\u8bd1\u7684\u7ed3\u679c,",
+    "template_format": "f-string",
+    "_type": "few_shot"
+}

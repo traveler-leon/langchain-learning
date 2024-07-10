@@ -1,5 +1,6 @@
 # langchain
 ## langchain生态介绍
+![img.png](../img/langchain-生态.png)
 langchain是一个用于开发以大模型作为底层能力支持的应用的框架，你如果要开发一个基于大模型的的应用，那么选择langchain会方便很多。 因为它为大模型应用产品提供了全生命周期管理方案。
 1. 应用的全生命周期管理
    2. 应用开发：用langchain提供的组件进行项目开发，或者用langGraph提供有状态的应用开发
@@ -20,11 +21,12 @@ langchain-core既为第三方的扩展提供了标准，也为langchain自身设
 
 ## LCEL
 LCEL是langchain所标榜的一个设计原则，它以一种以声明式的形式将langchain的各个组件链接起来，这里讲一下声明式，声明式意思就是说你只用关心输入和输出
-关于模块本身的实现细节，并不需要你去关心，这样就有一个好处，在langchain中设计了很多的组件，只要一个组件的输出格式满足另一个组件的输入，就可以把
-它串行起来。而这些关于LCEL的底层支持都来自于runnable，runnable是一个类，几乎在langchain中的所有组件都继承了这个类。
+关于模块本身的实现细节，并不需要你去关心，举个例子哈，比如在langchain中的llm，它有一个方法是invoke，它接受一个字符串，返回一个字符串，用户在使用的过程中
+根本不需要知道太多的细节，只需要知道invoke是输入一个字符串然后传给llm得到一个字符串就可以了。同时这样还有一个好处，在langchain中设计了很多的组件，
+只要一个组件的输出格式满足另一个组件的输入，就可以把它串行起来组成一个runnableSequence。而这些关于LCEL的底层支持都来自于runnable，runnable是一个类，几乎在langchain中的所有组件都继承了这个类。
 
 ## runnable
-runnable是langchain的一基类，而所有的组件都是runnable的子类，包括聊天模型、LLM、输出解析器、检索器、提示模板等，甚至你组成的chain也是
+runnable是langchain的一基类，几乎所有的核心组件都是runnable的子类，包括聊天模型、LLM、输出解析器、检索器、提示模板等，甚至你组成的chain也是
 runnable的子类：RunnableSequence或者是RunnableParalle，总之，几乎所有的组件都是runnable的子类。
 
 而runnable本身定义了一些标准的接口，用于子类去实现，其中比较重要的几个标准接口包括
@@ -35,6 +37,9 @@ stream：提供单个输入，得到流式输出
 ainvoke:invoke的异步
 abatch：batch的异步
 astream：stream的异步
+
+下面稍微丢一小部分，底层的runnable的框架图，这些都是lcel的基石
+![img.png](../img/runnable.png)
 
 ### runnable基础能力介绍
 #### invoke
@@ -159,4 +164,4 @@ astream：stream的异步
 
 
 
-**注意：原则上说，子类只要重写了invoke，其他的诸如ainvoke，batch，abatch等都可以使用，这是子类的最小化实现方式**
+**注意：原则上说，子类只要重写了invoke，其他的诸如ainvoke，batch，abatch等都可以使用，这是子类的最小化实现方式，特殊情况下其他的方法也会被一定程度的重写**
