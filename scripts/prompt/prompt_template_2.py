@@ -6,41 +6,44 @@
 import asyncio
 from langchain_core.prompts import PromptTemplate
 # 1. 以f-string格式渲染
-# prompt_template = PromptTemplate.from_template("""
-# 你是一个中英文翻译助手，你需要把我发给你的question翻译为英文，下面的examples是一些具体翻译的案例，翻译的时候请参考案例来翻译，注意只输出最终翻译的结果,：
-# examples：
-# question：美丽->beautiful;
-# question：男孩->boy;
-# question：男人->man；
-# question：456->four hundred and fifty-six;
-# question：1->one;
-# question：34->thirty-four
-# question：{user_input_chinese}
-# """)
+prompt_template = PromptTemplate.from_template("""
+你是一个翻译助手，你擅长将中文翻译为英文，请将我发送给你的question的内容翻译为英文，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
+
+## history examples:
+question:美丽->answer:beautiful;
+question:男孩->answer:boy;
+question:男人->answer:man;
+question:456->answer:four hundred and fifty-six;
+question:1->answer:one;
+question:34->answer:thirty-four;
+
+## user true task:
+question：{user_input_words}->answer：
+""")
 # 1.1. invoke传入字典
-# prompt = prompt_template.invoke({"user_input_chinese":"你好"})
+# prompt = prompt_template.invoke({"user_input_words":"你好"})
 # print(prompt)
 # 1.2. 传入单变量
 # prompt = prompt_template.invoke("你好")
 # print(prompt)
 #1.3 调用format_prompt
-# prompt= prompt_template.format_prompt(user_input_chinese="你好")
+# prompt= prompt_template.format_prompt(user_input_words="你好")
 # print(prompt)
 #1.4 调用format
-# prompt= prompt_template.format(user_input_chinese="你好")
+# prompt= prompt_template.format(user_input_words="你好")
 # print(prompt)
 # 2. batch传入多变量
-# prompt = prompt_template.batch([{"user_input_chinese":"你好"},{"user_input_chinese":"你是谁？"}])
+# prompt = prompt_template.batch([{"user_input_words":"你好"},{"user_input_words":"你是谁？"}])
 # print(prompt)
 # 3. stream流输出
-# for i in prompt_template.stream("Jinja2 是一个功能更加强大的 Python 模板引擎，常用于 Web 开发，尤其是 Flask 和 Django 框架中。它支持复杂的控制结构，如循环和条件语句"):
+# for i in prompt_template.stream({"user_input_words":"Jinja2 是一个功能更加强大的 Python 模板引擎，常用于 Web 开发，尤其是 Flask 和 Django 框架中。它支持复杂的控制结构，如循环和条件语句"}):
 #     print(i)
 
-# async def main():
-#     return await asyncio.gather(prompt_template.ainvoke({"user_input_chinese":"你好"}),prompt_template.ainvoke({"user_input_chinese":"我不好"}))
-#
-# res = asyncio.run(main())
-# print(res)
+async def main():
+    return await asyncio.gather(prompt_template.ainvoke({"user_input_words":"你好"}),prompt_template.ainvoke({"user_input_words":"我不好"}))
+
+res = asyncio.run(main())
+print(res)
 
 # 4. 定义部分变量
 # prompt_template = PromptTemplate.from_template("""
@@ -103,5 +106,5 @@ from langchain_core.prompts import PromptTemplate
 # prompt_template.save("./data/chinese2english.yml")
 
 # 6. 从保存的文件中加载
-prompt_template = PromptTemplate.from_file("data/chinese2english.yml")
-print(prompt_template)
+# prompt_template = PromptTemplate.from_file("data/chinese2english.yml")
+# print(prompt_template)
