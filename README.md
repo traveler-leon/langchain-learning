@@ -20,7 +20,8 @@ langchain是一个用于开发以大模型作为底层能力支持的应用的�
 - 第2章: langchain 中的prompt
   - [2.1 prompt第一讲-prompt科普](docs/prompt第一讲-prompt科普.md)
   - [2.2 prompt第二讲-langchain实现中英翻译助手](docs/prompt第二讲-langchain实现中英翻译助手.md)
-    - [2.3 prompt第三讲-PromptTemplate](docs/prompt第三讲-PromptTemplate.md)
+    - [2.2.1 prompt第三讲-PromptTemplate](docs/prompt第三讲-PromptTemplate.md)
   - [2.3 prompt第四讲-fewshot](docs/prompt第四讲-fewshot.md)
+    - [2.3.1 prompt第五讲-fewshot-selector](docs/prompt第五讲-fewshot-selector.md)
 
   

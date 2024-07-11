@@ -1,0 +1,55 @@
+_type: few_shot
+example_prompt:
+  _type: prompt
+  input_types: {}
+  input_variables:
+  - answer
+  - question
+  metadata: null
+  name: null
+  output_parser: null
+  partial_variables: {}
+  tags: null
+  template: 'question: {question}->answer:{answer}'
+  template_format: f-string
+  validate_template: false
+example_selector: null
+example_separator: '
+
+
+  '
+examples:
+- answer: beautiful
+  question: "\u7F8E\u4E3D"
+- answer: boy
+  question: "\u7537\u5B69"
+- answer: man
+  question: "\u7537\u4EBA"
+- answer: four
+  question: '456'
+- answer: four hundred and fifty-six
+  question: '456'
+- answer: one
+  question: '1'
+- answer: thirty-four
+  question: '34'
+input_types: {}
+input_variables:
+- dst_language
+- source_language
+- user_input_words
+metadata: null
+name: null
+output_parser: null
+partial_variables: {}
+prefix: "\n\u4F60\u662F\u4E00\u4E2A\u7FFB\u8BD1\u52A9\u624B\uFF0C\u4F60\u64C5\u957F\
+  \u5C06{source_language}\u7FFB\u8BD1\u4E3A{dst_language}\uFF0C\u8BF7\u5C06\u6211\u53D1\
+  \u9001\u7ED9\u4F60\u7684question\u7684\u5185\u5BB9\u7FFB\u8BD1\u4E3A{dst_language}\uFF0C\
+  \u4E0D\u8981\u8FD4\u56DE\u65E0\u5173\u7684\u5185\u5BB9\uFF0C\u53EA\u9700\u8FD4\u56DE\
+  \u6700\u7EC8\u7FFB\u8BD1\u7ED3\u679C\uFF0C\u4E0B\u9762\u7684history examples\u4E2D\
+  \u63D0\u4F9B\u4E86\u4E00\u4E9B\u5177\u4F53\u7684\u6848\u4F8B\uFF0C\u4E3A\u4F60\u63D0\
+  \u4F9B\u4E00\u4E9B\u53C2\u8003\uFF1A\n## history examples:\n"
+suffix: "\n## user true task:\nquestion\uFF1A{user_input_words}->answer\uFF1A\n"
+tags: null
+template_format: f-string
+validate_template: false

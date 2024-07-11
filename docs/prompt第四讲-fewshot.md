@@ -125,7 +125,7 @@ while(True):
         prompt = new_prompt_template.invoke({"user_input_words":user_input_word})
         print(llm.invoke(prompt))
 ```
-着重看一下FewShotPromptTemplate定义模板部分，他没有什么方式可以实例化对象，只支持直接实例化，而实例化
+着重看一下FewShotPromptTemplate定义模板部分，他没有什么方法可以实例化对象，只支持直接实例化，而实例化
 要传入的参数也不用咋说，格式一目了然
 **参数讲解**
 1. example_prompt：你想要案例遵守的prompt模板格式
@@ -143,4 +143,9 @@ format的原理如下：
 1. 遍历examples列表，根据example_prompt模板格式，实例化出一个prompt列表，并且以空格的形式进行拼接成一个字符串
 2. 将prefix添加到第一步得到prompt字符串前面，将suffix添加到prompt字符串后面
 3. 将输入的变量填入新的模板中，得到格式化后的prompt
+
+**其他支持的方法，和前面的PromptTemplate是一样的invoke，batch，stream等，需要注意的是，它也提供了save功能，但是
+没有提供加载功能，这很奇怪。**
+
+
 

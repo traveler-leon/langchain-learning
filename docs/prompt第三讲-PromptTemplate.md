@@ -406,7 +406,7 @@ while(True):
 1. 传入变量并赋值到初始的prompt模板中，生成新的prompt模板
 2. 传入的变量保存到partical_variables中
 3. 从最开始模板中的input_variables中剔除partical_variables部分，
-
+**也就是说，最开始所有的变量都属于input_variables，当你调用了partial方法之后，input_variables中的部分变量会被移动到partical_variables中**
 #### 直接实例化指定partical_variables
 ```python
 # -*- coding: utf-8 -*-
@@ -473,42 +473,18 @@ ok了，现在我们开发好了一个翻译助手了，核心就是设计了一
 使用，我们可以保存这个模板，但是需要注意两点：
 1. 如果你的模板里含有partial_variables，是无法保存的；
 2. 只能保存为json格式或者是yml格式
+所以综合这两种考虑，我们不能保存调用过partial方法后的prompt模板，也不能保存直接实例化时指定了partial_variables的模板，我们只能保存最初的模板，这也符合需求，因为你保存了调用
+partial后的模板的话，这些前置变量的值都被填进去了，用户也没法自定义，也就失去了这个模板的意义，所以下面演示一下如何保存最初的prompt模板
+
+**最重要：你可以观察一下保存后的文件，如果有中文，则只会显示16进制，但是现在的保存方法，是不支持传入编码参数的，如果你要让他正常显示中文和加载中文，需要到源码下的修改save方法，
+在open的时候加入编码参数,这一点来看langchain还是不够国际化，垃圾**
 ```python
 from langchain_core.prompts import PromptTemplate
 # 5. 保存prompt模板
-prompt_template = PromptTemplate(template="""
-你是一个翻译助手，你擅长将中文翻译为英文，请将我发送给你的question的内容翻译为英文，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
-
-## history examples:
-question:美丽->answer:beautiful;
-question:男孩->answer:boy;
-question:男人->answer:man;
-question:456->answer:four hundred and fifty-six;
-question:1->answer:one;
-question:34->answer:thirty-four;
-
-## user true task:
-question：{user_input_words}->answer：
-"""
-,input_variables=["user_input_words"])
-prompt_template.save("./data/chinese2english.yml")
-```
-### from_file加载
-加载上一步保存的prompt模板文件
-```python
-from langchain_core.prompts import PromptTemplate
-prompt_template = PromptTemplate.from_file("data/chinese2english.yml")
-print(prompt_template)
-```
-
-其他的还有一些方法和属性，下面简单的列举一下
-### dict
-将prompt模板转为字典
-```python
 from langchain_core.prompts import PromptTemplate
 # 5. 保存prompt模板
-prompt_template = PromptTemplate(template="""
-你是一个翻译助手，你擅长将中文翻译为英文，请将我发送给你的question的内容翻译为英文，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
+prompt_template_1 = PromptTemplate.from_template("""
+你是一个翻译助手，你擅长将{source_language}翻译为{dst_language}，请将我发送给你的question的内容翻译为{dst_language}，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
 
 ## history examples:
 question:美丽->answer:beautiful;
@@ -521,15 +497,27 @@ question:34->answer:thirty-four;
 ## user true task:
 question：{user_input_words}->answer：
 """)
-print(prompt_template.dict())
+prompt_template_1.save("./data/translate-lang2lang.yml")
 ```
-#### __add__
-实现了prompt模板之间的相加
+### from_file加载
+加载上一步保存的prompt模板文件，加载之后又可以正常使用partical了。
+同样的，需要注意编码问题。
+```python
+from langchain_core.prompts import PromptTemplate
+prompt_template = PromptTemplate.from_file("data/translate-lang2lang.yml")
+lag2lag = input("你想我成为什么翻译助手(格式如：中文-英文)：")
+source_language,dst_language = lag2lag.split('-')
+new_prompt_template = prompt_template.partial(source_language=source_language,dst_language=dst_language)
+print(new_prompt_template)
+```
+其他的还有一些方法和属性，下面简单的列举一下
+### dict
+将prompt模板转为字典
 ```python
 from langchain_core.prompts import PromptTemplate
 # 5. 保存prompt模板
-prompt_template_1 = PromptTemplate(template="""
-你是一个翻译助手，你擅长将中文翻译为英文，请将我发送给你的question的内容翻译为英文，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
+prompt_template_1 = PromptTemplate.from_template("""
+你是一个翻译助手，你擅长将{source_language}翻译为{dst_language}，请将我发送给你的question的内容翻译为{dst_language}，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
 
 ## history examples:
 question:美丽->answer:beautiful;
@@ -541,8 +529,28 @@ question:34->answer:thirty-four;
 
 ## user true task:
 question：{user_input_words}->answer：
-"""
-,input_variables=["user_input_words_1"])
+""")
+print(prompt_template_1.dict())
+```
+#### __add__
+实现了prompt模板之间的相加
+```python
+from langchain_core.prompts import PromptTemplate
+# 5. 保存prompt模板
+prompt_template_1 = PromptTemplate.from_template("""
+你是一个翻译助手，你擅长将{source_language}翻译为{dst_language}，请将我发送给你的question的内容翻译为{dst_language}，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
+
+## history examples:
+question:美丽->answer:beautiful;
+question:男孩->answer:boy;
+question:男人->answer:man;
+question:456->answer:four hundred and fifty-six;
+question:1->answer:one;
+question:34->answer:thirty-four;
+
+## user true task:
+question：{user_input_words}->answer：
+""")
 
 prompt_template_3 = PromptTemplate.from_template("""这是第二个prompt模板:{user_input_words_3}""")
 new_prompt = prompt_template_1+"这是新的模板：{user_input_words_2}"+prompt_template_3
@@ -557,8 +565,8 @@ print(new_prompt)
 ```python
 from langchain_core.prompts import PromptTemplate
 # 5. 保存prompt模板
-prompt_template_1 = PromptTemplate(template="""
-你是一个翻译助手，你擅长将中文翻译为英文，请将我发送给你的question的内容翻译为英文，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
+prompt_template_1 = PromptTemplate.from_template("""
+你是一个翻译助手，你擅长将{source_language}翻译为{dst_language}，请将我发送给你的question的内容翻译为{dst_language}，不要返回无关的内容，只需返回最终翻译结果，下面的history examples中提供了一些具体的案例，为你提供一些参考：
 
 ## history examples:
 question:美丽->answer:beautiful;
@@ -570,8 +578,7 @@ question:34->answer:thirty-four;
 
 ## user true task:
 question：{user_input_words}->answer：
-"""
-,input_variables=["user_input_words_1"])
+""")
 
 print(prompt_template_1.InputType)
 print(prompt_template_1.OutputType)
