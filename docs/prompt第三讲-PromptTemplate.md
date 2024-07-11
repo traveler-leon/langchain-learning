@@ -197,10 +197,10 @@ print(prompt)
 下面根据源码讲解一下invoke的原理
 **invoke原理**
 1. 校验config
-2. 校验输入变量 
-   3. 输入变量如果不是一个字典，并且模板中只有一个变量的话，就会将input_variables中保存的变量名拿出来，组成一个字典   
-   4. 如果传入的是一个字典，如果字典和保存在input_variables中有差异，则报错。  
-   5. 返回校验后的输入字典
+2. 校验输入变量         
+   3. 输入变量如果不是一个字典，并且模板中只有一个变量的话，就会将input_variables中保存的变量名拿出来，组成一个字典        
+   4. 如果传入的是一个字典，如果字典和保存在input_variables中有差异，则报错。          
+   5. 返回校验后的输入字典         
 3. 格式化模板（交给子类），生成prompt value
 **注意**：最后的结果中，生成是一个prompt value，而不是一个prompt，前面也提到了，这和prompt的差别就在于prompt value提供了字符串到message的互转
 
@@ -330,9 +330,9 @@ ainvoke的本质我已经在最开始就讲过，如果没有特殊情况，遵�
 
 ### PromptTemplate核心方法
 前面总结了PromptTemplate的几个核心变量，现在总结一下PromptTemplate核心方法
-1. invoke：单输入单输出关系，传递一组变量字典，得到一个prompt value
-   2. format_prompt:invoke的底层支持，生成prompt value
-   3. format:format_prompt的底层支持，生成字符串prompt
+1. invoke：单输入单输出关系，传递一组变量字典，得到一个prompt value        
+   2. format_prompt:invoke的底层支持，生成prompt value      
+   3. format:format_prompt的底层支持，生成字符串prompt         
 2. batch：多输入多输出关系，传递多组变量字典，得到多个prompt value
 3. stream：流式输出prompt value
 4. ainvoke：异步invoke
@@ -595,27 +595,27 @@ print(prompt_template_1.config_schema)
 
 ## 总结
 基本上PromptTemplate也已将讲完了，下面做一个小总结
-1. 变量
-   2. template：用于存储字符串模板
-   3. input_variables：用于存储变量，这个变量可以是直接从字符串模板中解析出来，也可以是自己指定，只要是和模板中的变量一样就行
-   4. template_format：渲染的格式，这个格式指导着如何解析template
-   5. partial_variables：这是一个前置变量，可以被前置定义
-2. 方法
-   1. invoke：单输入单输出关系，传递一组变量字典，得到一个prompt value
-      2. format_prompt:invoke的底层支持，生成prompt value
-      3. format:format_prompt的底层支持，生成字符串prompt
-   2. batch：多输入多输出关系，传递多组变量字典，得到多个prompt value
-   3. stream：流式输出prompt value
-   4. ainvoke：异步invoke
-   5. abatch：异步batch
-   6. astream：异步stream
-   7. dict：将prompt模板转为字典
-3. 属性
-   1. InputType:获取输入类型
-   2. OutputType：获取输出类型
-   3. input_schema：获取输入schema
-   4. output_schema：获取输出schema
-   5. config_schema：获取config的schema
+1. 变量       
+   2. template：用于存储字符串模板      
+   3. input_variables：用于存储变量，这个变量可以是直接从字符串模板中解析出来，也可以是自己指定，只要是和模板中的变量一样就行           
+   4. template_format：渲染的格式，这个格式指导着如何解析template           
+   5. partial_variables：这是一个前置变量，可以被前置定义           
+2. 方法        
+   1. invoke：单输入单输出关系，传递一组变量字典，得到一个prompt value        
+      2. format_prompt:invoke的底层支持，生成prompt value       
+      3. format:format_prompt的底层支持，生成字符串prompt         
+   2. batch：多输入多输出关系，传递多组变量字典，得到多个prompt value           
+   3. stream：流式输出prompt value         
+   4. ainvoke：异步invoke        
+   5. abatch：异步batch        
+   6. astream：异步stream        
+   7. dict：将prompt模板转为字典      
+3. 属性        
+   1. InputType:获取输入类型       
+   2. OutputType：获取输出类型        
+   3. input_schema：获取输入schema        
+   4. output_schema：获取输出schema        
+   5. config_schema：获取config的schema        
 
 ## 遗留问题
 从案例来说，还有一个问题，就是当我们在做翻译助手的时候，当我们是中英文翻译助手的时候，案例是符合我们的标准的，但是当我们是其他的翻译助手

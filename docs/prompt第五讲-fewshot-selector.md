@@ -8,8 +8,8 @@
 ### SemanticSimilarityExampleSelector
 SemanticSimilarityExampleSelector选择器是按照文本语义的相似度来来找相似案例的，所以要有一个判断相似的机制，通常在语言任务中用的都是embedding那一套（embedding章节会讲）：
 1. 引入一个embedding模型和一个向量数据库
-2. 将所有案例进行embedding化，存入向量数据库中
-3. 将输入的变量进行embedding化，然后在向量数据库中根据相似度计算（通常是余弦相似度）找出topK条相似案例
+   2. 将所有案例进行embedding化，存入向量数据库中            
+   3. 将输入的变量进行embedding化，然后在向量数据库中根据相似度计算（通常是余弦相似度）找出topK条相似案例                 
 
 下面先给出代码，然后对着代码说明
 ```python
@@ -90,17 +90,17 @@ print(prompt.to_string())
 按原理上来说，其实应该能解决我们的问题，但是实际运行的时候，却发现匹配的结果不如我们所想的
 ![img.png](../img/prompt/fewshot-selector-1.png)
 
-其问题就是出在了它的匹配原则上，虽然是按照相似度匹配，但是它在构建文本的时候有很大的问题，下面我按照源码的实际原理来距离，我拿出两个例子吧：
+其问题就是出在了它的匹配原则上，虽然是按照相似度匹配，但是它在构建文本的时候有很大的问题，下面我按照源码的实际原理来举例，我拿出两个例子吧：
 ```python
 examples = [
     {'question':'美丽',"answer":'beautiful'},
     {'question': '美丽', "answer": '美しい'},
 ]
 ```
-1. 首先会对list中的每一个字典进行处理             
-   2. 对字典中的成员按照key排序，然后取出排序后的对应value，进行拼接，比如上面两个拼接后的内容就是：“beautiful 美丽”，“美しい 美丽”           
-   3. 对拼接后的内容进行向量化           
-2. 当输入变量时，会用变量和向量化后的案例进行相似度计算，返回最相似的topK案例
+1. 首先会对list中的每一个字典进行处理                        
+   2. 对字典中的成员按照key排序，然后取出排序后的对应value，进行拼接，比如上面两个拼接后的内容就是：“beautiful 美丽”，“美しい 美丽”                      
+   3. 对拼接后的内容进行向量化                     
+2. 当输入变量时，会用变量和向量化后的案例进行相似度计算，返回最相似的topK案例           
 
 从上面来看，比对的完全是具体的翻译内容，这样，如果我输入"美丽"这个词，最相似的肯定是带有"美丽"的案例 ，但是这样显然是不对的，我们需要匹配的内容，其实和翻译的案例没关系，而是和种类有关系，最直觉的方法就是在案例中加入种类信息
 ```python
@@ -173,10 +173,10 @@ prompt = prompt_template.invoke({'source_language':source_language,'dst_language
 print(prompt.to_string())
 ```
 下面开始讲讲上面的代码：
-1. 首先需要自己定义一个TranslateExampleSelector选择器
-   2. 这个选择器必须继承BaseExampleSelector，继承之后必须重写两个方法
-      3. 方法1：add_example，往案例列表中添加新的案例，通常就和我写的一样，不用过多修改。日后如果你想加入更多的案例，直接类似调用```example_selector.add_example({'source_language':'中文','dst_language':"日文",'question': '美丽', "answer": '美しい'})```
-      4. 方法2：select_examples，实现匹配规则，得到匹配的结果，本次我们实现的逻辑就是，用传入的source_language和dst_language进行强匹配，后续学了embedding后，可以再回来进行改进
+1. 首先需要自己定义一个TranslateExampleSelector选择器           
+   2. 这个选择器必须继承BaseExampleSelector，继承之后必须重写两个方法             
+      3. 方法1：add_example，往案例列表中添加新的案例，通常就和我写的一样，不用过多修改。日后如果你想加入更多的案例，直接类似调用```example_selector.add_example({'source_language':'中文','dst_language':"日文",'question': '美丽', "answer": '美しい'})```           
+      4. 方法2：select_examples，实现匹配规则，得到匹配的结果，本次我们实现的逻辑就是，用传入的source_language和dst_language进行强匹配，后续学了embedding后，可以再回来进行改进        
 2. 将选择器实例化
 3. 实例化后的选择器传入FewShotPromptTemplate
 
