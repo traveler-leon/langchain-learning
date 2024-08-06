@@ -80,7 +80,7 @@ print(prompt.to_string())
 ```
 **代码创建过程**
 1. 引入一个embedding模型，我这里引入的是阿里的一个在线embedding服务，你可以引入任何embedding模型，甚至可以本地加载
-2. 穿件一个选择器，和我最开始说的一样，这个选择器需要的是一个embedding模型，一个向量库，当然还需要案例列表，和一个k值，这个k值就是指定要返回的相似的topK的值
+2. 创建一个选择器，和我最开始说的一样，这个选择器需要的是一个embedding模型，一个向量库，当然还需要案例列表，和一个k值，这个k值就是指定要返回的相似的topK的值
 3. 将选择器传入FewShotPromptTemplate模板中
 
 **代码匹配过程**
@@ -180,9 +180,12 @@ print(prompt.to_string())
 2. 将选择器实例化
 3. 实例化后的选择器传入FewShotPromptTemplate
 
-**注意：**基本上就完工了，这里可以回顾一下前一节[prompt第四讲-fewshot](prompt第四讲-fewshot.md),你会发现实例化FewShotPromptTemplate的时候，如果传入example_selector
+**注意**：
+1. 基本上就完工了，这里可以回顾一下前一节[prompt第四讲-fewshot](prompt第四讲-fewshot.md),你会发现实例化FewShotPromptTemplate的时候，如果传入example_selector
 ，是不用且也不能再传入examples的，如果传入了，在源码逻辑中，选择器就会失效，这是需要注意的一点。
-ok，这一小节就讲完了，还有一些选择器，我觉得看一看官网就可以了，主要是要掌握如何自己写选择器，最后展示一下改进后的完整的翻译助手
+2. 如果选择器不满足要求，可以自己写一个选择器，自定义的时候要继承BaseExampleSelector，然后重写add_example方法和select_examples方法，add_example方法就是往案例列表中添加新的案例，select_examples就是实现匹配规则，得到匹配的结果，
+
+3. ok。这一小节就讲完了，还有一些选择器，我觉得看一看官网就可以了，主要是要掌握如何自己自定义选择器，最后展示一下改进后的完整的翻译助手，如果你需要支持更多的翻译，比如中文-希腊语，相应的增加案例就可以了。
 ```python
 from langchain_core.prompts import PromptTemplate,FewShotPromptTemplate
 
